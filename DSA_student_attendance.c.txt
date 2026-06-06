@@ -1,0 +1,149 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_STUDENTS 100
+#define MAX_DAYS 100
+
+// Structure
+struct Student {
+    char name[50];
+    int attendance[MAX_DAYS];
+};
+
+int main() {
+    struct Student s[MAX_STUDENTS];
+
+    int days, totalStudents = 79;
+    int choice, i, j, found;
+
+    // ===== Predefined Names =====
+    char defaultNames[79][50] = {
+        "Yashu","Aditi","Shubham","Anmol","Harshita",
+        "Priyanshu_Dixit","Lokesh_Farswan","Aryan_Joshi","Shivank_Kamboj",
+        "Harmanpreet_Kaur","Aniket_Kumar","Sonu_Kumar","Vivek_Kumar",
+        "Pratibha_Kumari","Nidhi_Kumari","Anamika_Kumari","Ayush_Negi",
+        "Priyanshu_Panwar","Parth_Pathak","Bhumika_Pimoli","Sharique_Rahman",
+        "Shubham_Rana","Abhishek_Rana","Priyanka_Rana","Gautam_Rawat",
+        "Mayank_Rawat","Lakshita_Saini","Nirmal_Semalti","Bharti_Sharma",
+        "Mohit_Singh","Saurabh_Singh","Ankit_Singh_Negi","Aditini_Tiwari",
+        "Aarav","Vivaan","Aditya","Arjun","Krishna","Rohan","Rahul",
+        "Karan","Mohit","Aman","Sohan","Yash","Manav","Deepak","Nikhil",
+        "Harsh","Tushar","Varun","Raj","Priya","Ananya","Kavya","Sneha",
+        "Pooja","Riya","Simran","Neha","Meera","Ishita","Tanya","Komal",
+        "Naina","Shreya","Muskan","Divya","Payal","Sakshi","Nikita",
+        "Ajay","Vijay","Sanjay","Zara"
+    };
+
+    printf("Enter number of days: ");
+    scanf("%d", &days);
+
+    // Default Data Load
+    for(i = 0; i < totalStudents; i++) {
+        strcpy(s[i].name, defaultNames[i]);
+
+        for(j = 0; j < days; j++) {
+            s[i].attendance[j] = (i + j) % 2; // sample attendance
+        }
+    }
+
+    do {
+        printf("\n===== MENU =====");
+        printf("\n1. Show Student Data");
+        printf("\n2. Add New Student");
+        printf("\n3. Remove Student");
+        printf("\n4. Show All Students");
+        printf("\n5. Exit");
+        printf("\nEnter choice: ");
+        scanf("%d", &choice);
+
+        if(choice == 1) {
+            char search[50];
+            found = 0;
+
+            printf("Enter student name: ");
+            scanf("%s", search);
+
+            for(i = 0; i < totalStudents; i++) {
+                if(strcmp(search, s[i].name) == 0) {
+                    found = 1;
+                    int present = 0;
+
+                    for(j = 0; j < days; j++) {
+                        if(s[i].attendance[j] == 1)
+                            present++;
+                    }
+
+                    float per = (present * 100.0) / days;
+
+                    printf("\nName: %s", s[i].name);
+                    printf("\nPresent: %d / %d", present, days);
+                    printf("\nPercentage: %.2f%%", per);
+
+                    if(per >= 75)
+                        printf("\nStatus: Eligible\n");
+                    else
+                        printf("\nStatus: Not Eligible\n");
+                }
+            }
+
+            if(found == 0)
+                printf("Student not found!\n");
+        }
+
+        else if(choice == 2) {
+            if(totalStudents < MAX_STUDENTS) {
+                printf("Enter new student name: ");
+                scanf("%s", s[totalStudents].name);
+
+                for(j = 0; j < days; j++) {
+                    printf("Day %d (1=Present,0=Absent): ", j + 1);
+                    scanf("%d", &s[totalStudents].attendance[j]);
+                }
+
+                totalStudents++;
+                printf("Student added successfully!\n");
+            }
+            else {
+                printf("Database Full!\n");
+            }
+        }
+
+        else if(choice == 3) {
+            char removeName[50];
+            found = 0;
+
+            printf("Enter student name to remove: ");
+            scanf("%s", removeName);
+
+            for(i = 0; i < totalStudents; i++) {
+                if(strcmp(removeName, s[i].name) == 0) {
+                    found = 1;
+
+                    for(j = i; j < totalStudents - 1; j++) {
+                        s[j] = s[j + 1];
+                    }
+
+                    totalStudents--;
+                    printf("Student removed successfully!\n");
+                    break;
+                }
+            }
+
+            if(found == 0)
+                printf("Student not found!\n");
+        }
+
+        else if(choice == 4) {
+            printf("\n===== ALL STUDENTS =====\n");
+
+            for(i = 0; i < totalStudents; i++) {
+                printf("%d. %s\n", i + 1, s[i].name);
+            }
+        }
+
+    } while(choice != 5);
+
+    printf("Program Ended.\n");
+
+    return 0;
+}
